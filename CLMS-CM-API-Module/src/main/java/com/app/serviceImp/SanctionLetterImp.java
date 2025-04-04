@@ -6,9 +6,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.app.repository.SanctionLetterRepository;
+import com.app.service.SanctionLetterService;
 
 @Service
-public class SanctionLetterImp {
+public class SanctionLetterImp implements SanctionLetterService {
 
 	@Autowired SanctionLetterRepository sanctionRepository;
 	
@@ -16,5 +17,30 @@ public class SanctionLetterImp {
 	
 	@Value("${spring.mail.username}")
 	private String from;
+
+	@Override
+	public Double calculateEmiAmmount() {
+		Integer rate =18;
+		Long ansan= 1000000l;
+		Integer month = 48;
+		
+		double loanAmmount = ansan * (rate/100);
+		
+		double addAmmount = ansan + loanAmmount;
+		
+		
+		double	ammount =addAmmount/month;
+		
+		
+	   
+	   return ammount;
+		// double totalAmmount = ammount;
+		
+		
+		
+		
+		
+		
+	}
 	
 }
