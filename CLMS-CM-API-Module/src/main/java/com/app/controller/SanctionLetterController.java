@@ -15,6 +15,13 @@ public class SanctionLetterController {
 	
 	@Autowired RestTemplate rt;
 	
+	public Double loanAmountSanctioned() {
+		String url = "http://localhost:9001/cibil/generateCibil";
+		Integer cibil = rt.getForObject(url, Integer.class);
+		double amount=santionService.amountSanctioned(cibil);
+		return null;
+	}
+	
 	
 
 }
