@@ -1,5 +1,9 @@
 package com.app.repository;
 
-public interface SanctionLetterRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.app.entity.SanctionLetter;
+
+public interface SanctionLetterRepository extends JpaRepository<SanctionLetter, Integer> {
 
 }

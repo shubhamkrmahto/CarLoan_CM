@@ -3,6 +3,7 @@ package com.app.entity;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 public class SanctionLetter {
 
 	@Id
@@ -22,9 +24,11 @@ public class SanctionLetter {
 	private LocalDate sanctionDate;
 	private String applicantName;
 	private Long contactDetails;
-	private Double loanAmtountSanctioned;
 	private String interestType;
-	private Double rateOfInterest;
+	private Integer cibilScore;
+	private Double loanAmount;
+	private Double loanAmtountSanctioned;
+	private Integer rateOfInterest;
 	private Integer loanTenureInMonth;
 	private Double monthlyEMIAmount;
 	private String modeOfPayment;
@@ -35,5 +39,15 @@ public class SanctionLetter {
 	@Lob
 	@Column(length = 9000000)
 	private byte[] sanctionLetter;
+
 	
 }
+
+//{
+//    "interestType":"FIXED",
+//    "loanTenureInMonth":4,
+//	"modeOfPayment":"ONLINE",
+//	"remarks":"APPROVED BY CM",
+//	"termsAndCondition":"abcdefghijklmnopqrstuvwxyz",
+//    "status":"PENDING"
+//}
