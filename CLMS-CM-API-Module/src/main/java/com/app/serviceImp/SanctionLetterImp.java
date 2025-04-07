@@ -9,7 +9,10 @@ import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import com.app.entity.LoanApplication;
 import com.app.entity.SanctionLetter;
@@ -31,6 +34,9 @@ import com.lowagie.text.pdf.PdfGState;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class SanctionLetterImp implements SanctionLetterService {
@@ -55,6 +61,7 @@ public class SanctionLetterImp implements SanctionLetterService {
 		sanctionl.setCibilScore(details.getCibil().getCibilScore());
 		sanctionl.setApplicantName(details.getCustomer().getCustomerName());
 		sanctionl.setContactDetails(details.getCustomer().getCustomerContactNumber());
+		sanctionl.setApplicantEmail(details.getCustomer().getCustomerEmailId());
 		sanctionl.setInterestType(sl.getInterestType());//user
 		sanctionl.setLoanTenureInMonth(sl.getLoanTenureInMonth()*12);
 		sanctionl.setModeOfPayment(sl.getModeOfPayment());//user
@@ -298,10 +305,24 @@ public class SanctionLetterImp implements SanctionLetterService {
 		
 		sl.setSanctionLetter(outputInByteArray);
 		
-		return inputStream;
+		MimeMessage message = jms.createMimeMessage();
 		
+		MimeMessageHelper mmh = new MimeMessageHelper(message, true);
 		
+		ByteArrayResource resource = new ByteArrayResource(outputInByteArray);
 		
+		mmh.setTo(sl.getApplicantEmail());
+		mmh.setSubject("Sanction Letter");
+		mmh.setFrom(sl.getApplicantEmail());
+		mmh.setText("Dear "+sl.getApplicantName()+",\nAttached to this mail is the Sanction Letter for the Loan Application Form you submitted at Krushna FinCORP.");
+		mmh.addAttachment("SanctionLetter.pdf",resource);
+		
+		jms.send(message);
+		
+			return inputStream;
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (DocumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
