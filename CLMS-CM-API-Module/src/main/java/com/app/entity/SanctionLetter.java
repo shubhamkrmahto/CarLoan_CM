@@ -29,10 +29,12 @@ public class SanctionLetter {
 	private Integer rateOfInterest;
 	private Integer loanTenureInMonth;
 	private Double monthlyEMIAmount;
+	private Double loanAmount;
 	private String modeOfPayment;
 	private String remarks;
 	private String termsAndCondition;
 	private String status;
+	private Integer cibilScore;
 	
 	@Lob
 	@Column(length = 9000000)
