@@ -24,15 +24,18 @@ public class SanctionLetter {
 	private LocalDate sanctionDate;
 	private String applicantName;
 	private Long contactDetails;
+	private String applicantEmail;
 	private Double loanAmtountSanctioned;
 	private String interestType;
 	private Integer rateOfInterest;
 	private Integer loanTenureInMonth;
 	private Double monthlyEMIAmount;
+	private Double loanAmount;
 	private String modeOfPayment;
 	private String remarks;
 	private String termsAndCondition;
 	private String status;
+	private Integer cibilScore;
 	
 	@Lob
 	@Column(length = 9000000)
