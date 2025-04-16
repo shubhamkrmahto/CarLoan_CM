@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +71,7 @@ public class SanctionLetterImp implements SanctionLetterService {
 		sanctionl.setStatus(sl.getStatus());//user
 		sanctionl.setTermsAndCondition(sl.getTermsAndCondition());//user
 		
+		sanctionRepository.save(sanctionl);		
 		return "Sanction Details Saved";
 	}
 
@@ -269,8 +271,13 @@ public class SanctionLetterImp implements SanctionLetterService {
 		cell9.setPhrase(new Phrase("Monthly Amount",fontRomanBold));
 		table.addCell(cell9);
 		
-		cell9.setPhrase(new Phrase("Rs."+sl.getMonthlyEMIAmount()+"/-"));
+		// logic for EMI Amount for only 2 digits after the decimal.
+		double emiAmount = Math.round(sl.getMonthlyEMIAmount()*100.0)/100.0;
+		
+		cell9.setPhrase(new Phrase("Rs."+emiAmount+"/-"));
 		table.addCell(cell9);
+		
+		
 		
 		PdfPCell cell10 = new PdfPCell();
 		cell10.setPadding(5);
@@ -318,6 +325,8 @@ public class SanctionLetterImp implements SanctionLetterService {
 		mmh.addAttachment("SanctionLetter.pdf",resource);
 		
 		jms.send(message);
+
+		sanctionRepository.save(sl);
 		
 			return inputStream;
 		} catch (MessagingException e) {
