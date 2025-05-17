@@ -24,10 +24,11 @@ public class SanctionLetter {
 	private LocalDate sanctionDate;
 	private String applicantName;
 	private Long contactDetails;
+	private String applicantEmail;
+	private Double loanAmtountSanctioned;
 	private String interestType;
 	private Integer cibilScore;
 	private Double loanAmount;
-	private Double loanAmtountSanctioned;
 	private Integer rateOfInterest;
 	private Integer loanTenureInMonth;
 	private Double monthlyEMIAmount;
