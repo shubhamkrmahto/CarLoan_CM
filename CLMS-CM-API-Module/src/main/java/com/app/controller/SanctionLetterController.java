@@ -28,7 +28,7 @@ public class SanctionLetterController {
 	@Autowired RestTemplate rt;
 	
 
-	@PostMapping("/saveSanction")
+	@PostMapping("/saveSanction/{id}")
 	public ResponseEntity<String> saveSanction(@PathVariable("id") Integer id,@RequestBody SanctionLetter sl)
 	{
 		
