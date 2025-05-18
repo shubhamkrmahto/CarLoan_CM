@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -49,6 +52,8 @@ public class SanctionLetterImp implements SanctionLetterService{
 	@Value("${spring.mail.username}")
 	private String from;
 
+	private static final Logger log = LoggerFactory.getLogger(SanctionLetterImp.class);
+	
 	@Override
 	public String saveSanction(SanctionLetter sl, LoanApplication details) {
 		
@@ -69,7 +74,8 @@ public class SanctionLetterImp implements SanctionLetterService{
 		sanctionl.setStatus(sl.getStatus());//user
 		sanctionl.setTermsAndCondition(sl.getTermsAndCondition());//user
 		
-		sanctionRepository.save(sanctionl);		
+		sanctionRepository.save(sanctionl);	
+		log.info("Sanction Details Saved from CM");
 		return "Sanction Details Saved";
 	}
 
@@ -77,10 +83,9 @@ public class SanctionLetterImp implements SanctionLetterService{
 
 	@Override
 	public SanctionLetter getById(Integer id) {
-		// TODO Auto-generated method stub
 		
 		Optional<SanctionLetter> byId = sanctionRepository.findById(id);
-		
+		log.info("Get Single Sanction Letter");
 		return byId.get();
 	}
 	
@@ -102,24 +107,28 @@ public class SanctionLetterImp implements SanctionLetterService{
 			
 			sanctionl.setLoanAmtountSanctioned(sanctionl.getLoanAmount()- 100000);
 			sanctionRepository.save(sanctionl);
+			log.info("Loan Amount Sanctioned Update.....!");
 			return "Loan Amount Sanctioned Update.....!";
 			
 		}else if(cibilScore>=650 && cibilScore<675) {
 			
 			sanctionl.setLoanAmtountSanctioned(sanctionl.getLoanAmount()-200000);
 			sanctionRepository.save(sanctionl);
+			log.info("Loan Amount Sanctioned Update.....!");
 			return "Loan Amount Sanctioned Update.....!";
 			
 		}else if(cibilScore>=625 && cibilScore<650) {
 			
 			sanctionl.setLoanAmtountSanctioned(sanctionl.getLoanAmount()-300000);
 			sanctionRepository.save(sanctionl);
+			log.info("Loan Amount Sanctioned Update.....!");
 			return "Loan Amount Sanctioned Update.....!";
 			
 		}else {
 			
 			sanctionl.setLoanAmtountSanctioned(sanctionl.getLoanAmount()-400000);
 			sanctionRepository.save(sanctionl);
+			log.info("Loan Amount Sanctioned Update.....!");
 			return "Loan Amount Sanctioned Update.....!";
 		}	
 		
@@ -137,29 +146,34 @@ public class SanctionLetterImp implements SanctionLetterService{
 		{
 			sanctionl.setRateOfInterest(12);
 			sanctionRepository.save(sanctionl);
+			log.info("Rate Of Interest Updated.....!");
 			return "Rate Of Interest Updated.....!";
 		}
 		else if(cibilScore>=675 && cibilScore<700)
 		{
 			sanctionl.setRateOfInterest(15);
 			sanctionRepository.save(sanctionl);
+			log.info("Rate Of Interest Updated.....!");
 			return "Rate Of Interest Updated.....!";
 		}
 		else if(cibilScore>=650 && cibilScore<675)
 		{
 			sanctionl.setRateOfInterest(18);
 			sanctionRepository.save(sanctionl);
+			log.info("Rate Of Interest Updated.....!");
 			return "Rate Of Interest Updated.....!";
 		}
 		else if(cibilScore>=625 && cibilScore<650)
 		{
 			sanctionl.setRateOfInterest(20);
 			sanctionRepository.save(sanctionl);
+			log.info("Rate Of Interest Updated.....!");
 			return "Rate Of Interest Updated.....!";
 		}
 		else {
 			sanctionl.setRateOfInterest(25);
 			sanctionRepository.save(sanctionl);
+			log.info("Rate Of Interest Updated.....!");
 			return "Rate Of Interest Updated.....!";
 		}
 		
@@ -217,7 +231,7 @@ public class SanctionLetterImp implements SanctionLetterService{
 	            
 	            content.addImage(watermarkImage);
 	            
-			
+	            log.info("Add Image in Sanction Letter PDF Successfully...!");
 //		PdfImage image = new PdfImage(image, watermark, null);
 		
 		
@@ -274,6 +288,7 @@ public class SanctionLetterImp implements SanctionLetterService{
 		headingpara.setAlignment("justify");
 		
 		docs.add(headingpara);
+		log.info("Add Heading Paragraph  :-  "+heading);
 		
 //		String headingOfTable = "Applicant Details";
 				
@@ -287,6 +302,7 @@ public class SanctionLetterImp implements SanctionLetterService{
 		headingTablepara.setAlignment("center");
 		
 		docs.add(headingTablepara);
+		log.info("Add Table Heading Successfully :- Applicant Details");
 		
 		PdfPTable table = new PdfPTable(2);
 		table.setSpacingBefore(20);
@@ -378,6 +394,8 @@ public class SanctionLetterImp implements SanctionLetterService{
 		
 		docs.add(table);
 		
+		log.info("Add All Pdf Table Cell/Phrase Successfully...!");
+		
 		String signature = "Applicant Signature\n"+sl.getApplicantName();
 		
 		Paragraph signaturePara = new Paragraph(signature,fontRoman);
@@ -385,6 +403,8 @@ public class SanctionLetterImp implements SanctionLetterService{
 		signaturePara.setSpacingBefore(30);
 		
 		docs.add(signaturePara);
+		
+		log.info("Applicant Signature Successfully :- "+sl.getApplicantName());
 		
 		String footer = "Thank You,\nBy krushna FinCORP";
 		
@@ -394,6 +414,7 @@ public class SanctionLetterImp implements SanctionLetterService{
 		
 		docs.add(footerpara);
 		docs.close();
+		log.info("Add footer Successfully :- "+footer);
 		
 		byte[] outputInByteArray = outputStream.toByteArray();
 		
@@ -416,15 +437,20 @@ public class SanctionLetterImp implements SanctionLetterService{
 		jms.send(message);
 
 		sanctionRepository.save(sl);
-		
+		log.info("Sanction Letter PDF Create and sent Email To Customer Successfully...!");
 			return inputStream;
+			
 		} catch (MessagingException e) {
+			log.error("Something went wrong on pdf creation :- "+e.getMessage());
 			e.printStackTrace();
 		} catch (DocumentException e) {
 			e.printStackTrace();
+			log.error("Something went wrong on pdf creation :- "+e.getMessage());
 		} catch (FileNotFoundException e) {
+			log.error("Something went wrong on pdf creation :- "+e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
+			log.error("Something went wrong on pdf creation :- "+e.getMessage());
 			e.printStackTrace();
 		}
 		return null;
@@ -440,19 +466,21 @@ public class SanctionLetterImp implements SanctionLetterService{
 		if(cibilScore>=700) {
 			
 			sanctionl.setLoanAmtountSanctioned(sanctionl.getLoanAmount());
-			
+			log.info("Loan Amount Sanctioned Update.....! ");
 			return "Loan Amount Sanctioned Update.....!";
 			
 		}else if(cibilScore>=675 && cibilScore<700) {
 			
 			sanctionl.setLoanAmtountSanctioned(sanctionl.getLoanAmount()- 100000);
 			sanctionRepository.save(sanctionl);
+			log.info("Loan Amount Sanctioned Update.....! ");
 			return "Loan Amount Sanctioned Update.....!";
 			
 		}else if(cibilScore>=650 && cibilScore<675) {
 			
 			sanctionl.setLoanAmtountSanctioned(sanctionl.getLoanAmount()-200000);
 			sanctionRepository.save(sanctionl);
+			log.info("Loan Amount Sanctioned Update.....! ");
 			return "Loan Amount Sanctioned Update.....!";
 			
 		}else if(cibilScore>=625 && cibilScore<650) {
@@ -465,6 +493,7 @@ public class SanctionLetterImp implements SanctionLetterService{
 			
 			sanctionl.setLoanAmtountSanctioned(sanctionl.getLoanAmount()-400000);
 			sanctionRepository.save(sanctionl);
+			log.info("Loan Amount Sanctioned Update.....! ");
 			return "Loan Amount Sanctioned Update.....!";
 		}	
 		
@@ -483,29 +512,34 @@ public class SanctionLetterImp implements SanctionLetterService{
 		{
 			sanctionl.setRateOfInterest(12);
 			sanctionRepository.save(sanctionl);
+			log.info("Rate Of Interest Updated.....!");
 			return "Rate Of Interest Updated.....!";
 		}
 		else if(cibilScore>=675 && cibilScore<700)
 		{
 			sanctionl.setRateOfInterest(15);
 			sanctionRepository.save(sanctionl);
+			log.info("Rate Of Interest Updated.....!");
 			return "Rate Of Interest Updated.....!";
 		}
 		else if(cibilScore>=650 && cibilScore<675)
 		{
 			sanctionl.setRateOfInterest(18);
 			sanctionRepository.save(sanctionl);
+			log.info("Rate Of Interest Updated.....!");
 			return "Rate Of Interest Updated.....!";
 		}
 		else if(cibilScore>=625 && cibilScore<650)
 		{
 			sanctionl.setRateOfInterest(20);
 			sanctionRepository.save(sanctionl);
+			log.info("Rate Of Interest Updated.....!");
 			return "Rate Of Interest Updated.....!";
 		}
 		else {
 			sanctionl.setRateOfInterest(25);
 			sanctionRepository.save(sanctionl);
+			log.info("Rate Of Interest Updated.....!");
 			return "Rate Of Interest Updated.....!";
 		}
 		
@@ -520,9 +554,10 @@ public class SanctionLetterImp implements SanctionLetterService{
 		if(year>2&&year<6) {
 		sanctionl.setLoanTenureInMonth(year*12);
 		sanctionRepository.save(sanctionl);
+		log.info("Loan Tenure Updated for this id : "+id+ " is "+sanctionl.getLoanTenureInMonth());
 		return "Loan Tenure Updated...";
 		}
-		
+		log.warn("Loan Tenure should not be more than 6 years or less than 2 years...id :- "+id);
 		return "Loan Tenure should not be more than 6 years or less than 2 years...";
 	}
 
@@ -543,9 +578,10 @@ public class SanctionLetterImp implements SanctionLetterService{
 		sanctionl.setMonthlyEMIAmount(emiAmount);
 		
 		sanctionRepository.save(sanctionl);
-		
+		log.info("EMI Amount generated for this id :- "+id +" Amount is : "+sanctionl.getMonthlyEMIAmount());
 		return "EMI Amount generated...";
 		}
+		log.warn("Generate Rate Of Interest First");
 		return "Generate Rate Of Interest First";
 	}
 	
