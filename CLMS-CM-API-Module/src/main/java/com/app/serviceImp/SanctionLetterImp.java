@@ -1,6 +1,5 @@
 package com.app.serviceImp;
 
-import java.awt.Color;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -10,15 +9,18 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+<<<<<<< HEAD
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+=======
+>>>>>>> branch 'master' of https://github.com/shubhamkrmahto/CarLoan_CM.git
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
 import com.app.entity.LoanApplication;
 import com.app.entity.SanctionLetter;
 import com.app.enums.SanctionLetterStatus;
@@ -33,7 +35,6 @@ import com.lowagie.text.Image;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.CMYKColor;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfGState;
@@ -541,6 +542,7 @@ public class SanctionLetterImp implements SanctionLetterService{
 		}
 		log.warn("Generate Rate Of Interest First");
 		return "Generate Rate Of Interest First";
+
 	}
 
 }
