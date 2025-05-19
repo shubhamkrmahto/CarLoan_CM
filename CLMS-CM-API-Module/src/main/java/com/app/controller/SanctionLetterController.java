@@ -43,7 +43,7 @@ public class SanctionLetterController {
 		
 		System.out.println("controller class");
 		
-		String url = "http://localhost:7002/loanApplication/getLoanApplicationDetailById/"+id;
+		String url = "http://localhost:9090/crm/loanApplication/getLoanApplicationDetailById/"+id;
 		LoanApplication loan = rt.getForObject(url, LoanApplication.class);
 		
 		System.out.println(loan);
