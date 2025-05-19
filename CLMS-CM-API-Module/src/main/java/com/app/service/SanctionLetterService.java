@@ -9,6 +9,7 @@ import com.app.entity.SanctionLetter;
 
 public interface SanctionLetterService {
 
+
 	public String saveSanction(SanctionLetter sl,LoanApplication details);
 
 	public SanctionLetter getById(Integer id);
