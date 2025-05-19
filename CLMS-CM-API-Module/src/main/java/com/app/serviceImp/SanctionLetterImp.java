@@ -1,6 +1,7 @@
 package com.app.serviceImp;
 
 import java.io.ByteArrayInputStream;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,12 +9,8 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
-<<<<<<< HEAD
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-=======
->>>>>>> branch 'master' of https://github.com/shubhamkrmahto/CarLoan_CM.git
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
