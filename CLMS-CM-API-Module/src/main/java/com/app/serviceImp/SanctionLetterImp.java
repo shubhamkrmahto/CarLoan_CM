@@ -77,7 +77,7 @@ public class SanctionLetterImp implements SanctionLetterService{
 		
 		log.info("Sanction Details Saved from CM");
 		return "Sanction Details Saved";
-	}
+	
 
 	
 
