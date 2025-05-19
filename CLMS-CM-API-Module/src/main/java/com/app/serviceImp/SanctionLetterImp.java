@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import com.app.entity.LoanApplication;
 import com.app.entity.SanctionLetter;
+import com.app.enums.SanctionLetterStatus;
 import com.app.repository.SanctionLetterRepository;
 import com.app.service.SanctionLetterService;
 import com.lowagie.text.Chunk;
@@ -59,9 +61,8 @@ public class SanctionLetterImp implements SanctionLetterService{
 		
 		SanctionLetter sanctionl = new SanctionLetter();
 		
-		Double loanAmount = details.getLoanAmount();
 		
-		sanctionl.setLoanAmount(loanAmount);
+		sanctionl.setLoanAmount(details.getLoanAmount());
 		sanctionl.setCibilScore(details.getCibil().getCibilScore());
 		sanctionl.setApplicantName(details.getCustomer().getCustomerName());
 		sanctionl.setContactDetails(details.getCustomer().getCustomerContactNumber());
@@ -71,10 +72,11 @@ public class SanctionLetterImp implements SanctionLetterService{
 		sanctionl.setModeOfPayment(sl.getModeOfPayment());//user
 		sanctionl.setRemarks(sl.getRemarks());//user
 		sanctionl.setSanctionDate(LocalDate.now());
-		sanctionl.setStatus(sl.getStatus());//user
+		sanctionl.setStatus(SanctionLetterStatus.NOT_GENERATED);
 		sanctionl.setTermsAndCondition(sl.getTermsAndCondition());//user
 		
 		sanctionRepository.save(sanctionl);	
+		
 		log.info("Sanction Details Saved from CM");
 		return "Sanction Details Saved";
 	}
@@ -91,6 +93,14 @@ public class SanctionLetterImp implements SanctionLetterService{
 	
 	
 
+	@Override
+	public List<SanctionLetter> getAllSanctionLetters() {
+		
+		log.info("Get All Sanction Letter Successfully...!");
+		return sanctionRepository.findAll();
+	}
+
+	
 	// update Sanctioned Loan Amount
 	
 	@Override
@@ -179,14 +189,6 @@ public class SanctionLetterImp implements SanctionLetterService{
 		
 	}
 
-
-	// update Loan Tuner In Month
-	@Override
-	public String updateLoanTunerInMonth(Integer id, Integer cibilScore) {
-
-		
-		return null;
-	}
 	
 
 	@Override
@@ -202,26 +204,15 @@ public class SanctionLetterImp implements SanctionLetterService{
 		
 		docs.open();
 		try {
-//			Rectangle pageSize = docs.getPageSize();
 			
 			PdfContentByte content = writer.getDirectContentUnder();
-//			
-//			content.saveState();
-//			content.setColorFill(new Color(240, 240, 240)); // Light gray
-//			content.rectangle(pageSize.getLeft(), pageSize.getBottom(),
-//                             pageSize.getWidth(), pageSize.getHeight());
-//			content.fill();
-//			content.restoreState();
 		
-				String watermark = "C:/Users/Asus/Pictures/Screenshots/KrushnaFinCORP.png";	
-			
-				Image watermarkImage = Image.getInstance(watermark);
-				
-				watermarkImage.setAbsolutePosition(89, 157); // position on page
-	            watermarkImage.scaleToFit(419, 419); // resize if needed
-	            watermarkImage.setRotationDegrees(0); // optional rotation
-	            
-	            
+//				String watermark = "C:/Users/Asus/Pictures/Screenshots/KrushnaFinCORP.png";	
+//			
+//				Image watermarkImage = Image.getInstance(watermark);
+//				watermarkImage.setAbsolutePosition(89, 157); // position on page
+//	            watermarkImage.scaleToFit(419, 419); // resize if needed
+//	            watermarkImage.setRotationDegrees(0); // optional rotation  
 	            
 	            PdfGState gs1 = new PdfGState();
 	            
@@ -229,15 +220,9 @@ public class SanctionLetterImp implements SanctionLetterService{
 	            
 	            content.setGState(gs1);
 	            
-	            content.addImage(watermarkImage);
+//	            content.addImage(watermarkImage);
 	            
-	            log.info("Add Image in Sanction Letter PDF Successfully...!");
-//		PdfImage image = new PdfImage(image, watermark, null);
-		
-		
 
-		
-		//String title = "Krushna FinCORP";
 		
 		Font titlefont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20, CMYKColor.BLACK);
 		
@@ -254,7 +239,6 @@ public class SanctionLetterImp implements SanctionLetterService{
 		para2title.add(new Chunk("Krushna FinCORP",fontBold).setUnderline(2f,-5f));
 		para2title.setSpacingBefore(25);
 		para2title.setAlignment("left");
-		
 		docs.add(para2title);
 		
 		
@@ -263,44 +247,23 @@ public class SanctionLetterImp implements SanctionLetterService{
 		
 		Paragraph paraAddress = new Paragraph();
 		paraAddress.add(new Chunk("Sanjay Nagar, Balco\nKorba, Chhattisgarh\nPin Code :- 495684 \nPhone No. :- 9098765354 \nEmail ID :- financeserviceskrishna@gmail.com \n\nTo, \nMr. "+sl.getApplicantName()+"\nContact No. :- "+sl.getContactDetails()+"\nDate :- "+LocalDate.now(),fontRoman));
-		//paraAddress.setAlignment("center");
 		paraAddress.setSpacingBefore(10);
-		
 		docs.add(paraAddress);
 		
 		
-//		Font title3font = FontFactory.getFont(FontFactory.HELVETICA, 15, CMYKColor.BLACK);
-//		
-//		Paragraph para3title = new Paragraph();
-//		para3title.add(new Chunk("To, \nMr. Shubham Kumar Mahto \nContact No. :- 8888787868 \n Date :- 04/Apr/2025",title3font));
-//		para3title.setSpacingBefore(20);
-//		//paratitle.setAlignment("center");
-//		
-//		docs.add(para3title);
 		
 		String heading = "Dear "+sl.getApplicantName()+",\nKrishna FinCORP, Welcomes you. We are Please to inform you that your application for Car Loan of amount Rs."+sl.getLoanAmount()+"/- has been accepted. The information mentioned by you has been investigated secretly by the Company team through online addhar/pan no based given below are the details as captured in the Krishna FinCORP Recorded with us. Please go through the carefully and intimate to us immediately in case of any discrepancy. Your Application Details below:";
-		
-//		Font headingfont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
-		
 		Paragraph headingpara = new Paragraph(heading,fontRoman);
-		
 		headingpara.setSpacingBefore(20);
 		headingpara.setAlignment("justify");
-		
 		docs.add(headingpara);
 		log.info("Add Heading Paragraph  :-  "+heading);
 		
-//		String headingOfTable = "Applicant Details";
-				
-//		Font headingFontOfTable = FontFactory.getFont(FontFactory.TIMES_BOLD, 14);
 		
 		Paragraph headingTablepara = new Paragraph();
-		headingTablepara.add(new Chunk("Applicant Details",fontBold).setUnderline(2f,-5f));
-		
+		headingTablepara.add(new Chunk("Sanction Letter Details",fontBold).setUnderline(2f,-5f));
 		headingTablepara.setSpacingBefore(20);
-//		headingTablepara.setSpacingAfter(10);
 		headingTablepara.setAlignment("center");
-		
 		docs.add(headingTablepara);
 		log.info("Add Table Heading Successfully :- Applicant Details");
 		
@@ -319,7 +282,6 @@ public class SanctionLetterImp implements SanctionLetterService{
 		cell2.setPadding(5);
 		cell2.setPhrase(new Phrase("Sanction Date",fontRomanBold));
 		table.addCell(cell2);
-		
 		cell2.setPhrase(new Phrase(sl.getSanctionDate().toString()));
 		table.addCell(cell2);
 		
@@ -327,7 +289,6 @@ public class SanctionLetterImp implements SanctionLetterService{
 		cell3.setPadding(5);
 		cell3.setPhrase(new Phrase("Applicant Name",fontRomanBold));
 		table.addCell(cell3);
-		
 		cell3.setPhrase(new Phrase(sl.getApplicantName()));
 		table.addCell(cell3);
 		
@@ -335,7 +296,6 @@ public class SanctionLetterImp implements SanctionLetterService{
 		cell4.setPadding(5);
 		cell4.setPhrase(new Phrase("Contact Details",fontRomanBold));
 		table.addCell(cell4);
-		
 		cell4.setPhrase(new Phrase("+91"+sl.getContactDetails().toString()));
 		table.addCell(cell4);
 		
@@ -343,7 +303,6 @@ public class SanctionLetterImp implements SanctionLetterService{
 		cell5.setPadding(5);
 		cell5.setPhrase(new Phrase("Loan amount Sanctioned",fontRomanBold));
 		table.addCell(cell5);
-		
 		cell5.setPhrase(new Phrase(sl.getLoanAmtountSanctioned().toString()));
 		table.addCell(cell5);
 		
@@ -351,7 +310,6 @@ public class SanctionLetterImp implements SanctionLetterService{
 		cell6.setPadding(5);
 		cell6.setPhrase(new Phrase("Interest Type",fontRomanBold));
 		table.addCell(cell6);
-		
 		cell6.setPhrase(new Phrase(sl.getInterestType()));
 		table.addCell(cell6);
 		
@@ -359,7 +317,6 @@ public class SanctionLetterImp implements SanctionLetterService{
 		cell7.setPadding(5);
 		cell7.setPhrase(new Phrase("Rate Of Interest",fontRomanBold));
 		table.addCell(cell7);
-		
 		cell7.setPhrase(new Phrase(sl.getRateOfInterest().toString()+"%"));
 		table.addCell(cell7);
 		
@@ -367,7 +324,6 @@ public class SanctionLetterImp implements SanctionLetterService{
 		cell8.setPadding(5);
 		cell8.setPhrase(new Phrase("Loan tenure amount",fontRomanBold));
 		table.addCell(cell8);
-		
 		cell8.setPhrase(new Phrase(sl.getLoanTenureInMonth()+" Months"));
 		table.addCell(cell8);
 		
@@ -378,7 +334,6 @@ public class SanctionLetterImp implements SanctionLetterService{
 		
 		// logic for EMI Amount for only 2 digits after the decimal.
 		double emiAmount = Math.round(sl.getMonthlyEMIAmount()*100.0)/100.0;
-		
 		cell9.setPhrase(new Phrase("Rs."+emiAmount+"/-"));
 		table.addCell(cell9);
 		
@@ -388,7 +343,6 @@ public class SanctionLetterImp implements SanctionLetterService{
 		cell10.setPadding(5);
 		cell10.setPhrase(new Phrase("Mode of Payment",fontRomanBold));
 		table.addCell(cell10);
-		
 		cell10.setPhrase(new Phrase(sl.getModeOfPayment()));
 		table.addCell(cell10);
 		
@@ -435,6 +389,8 @@ public class SanctionLetterImp implements SanctionLetterService{
 		mmh.addAttachment("SanctionLetter.pdf",resource);
 		
 		jms.send(message);
+		
+		sl.setStatus(SanctionLetterStatus.GENERATED);
 
 		sanctionRepository.save(sl);
 		log.info("Sanction Letter PDF Create and sent Email To Customer Successfully...!");
@@ -446,13 +402,14 @@ public class SanctionLetterImp implements SanctionLetterService{
 		} catch (DocumentException e) {
 			e.printStackTrace();
 			log.error("Something went wrong on pdf creation :- "+e.getMessage());
-		} catch (FileNotFoundException e) {
-			log.error("Something went wrong on pdf creation :- "+e.getMessage());
-			e.printStackTrace();
-		} catch (IOException e) {
-			log.error("Something went wrong on pdf creation :- "+e.getMessage());
-			e.printStackTrace();
 		}
+//		catch (FileNotFoundException e) {
+//			log.error("Something went wrong on pdf creation :- "+e.getMessage());
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			log.error("Something went wrong on pdf creation :- "+e.getMessage());
+//			e.printStackTrace();
+//		}
 		return null;
 	}
 	
@@ -466,6 +423,7 @@ public class SanctionLetterImp implements SanctionLetterService{
 		if(cibilScore>=700) {
 			
 			sanctionl.setLoanAmtountSanctioned(sanctionl.getLoanAmount());
+			sanctionRepository.save(sanctionl);
 			log.info("Loan Amount Sanctioned Update.....! ");
 			return "Loan Amount Sanctioned Update.....!";
 			
@@ -546,20 +504,20 @@ public class SanctionLetterImp implements SanctionLetterService{
 	}
 
 
-	// update Loan Tuner In Month
-	@Override
-	public String updateLoanTenureInMonth(Integer id,Integer year) {
-
-		SanctionLetter sanctionl = getById(id);
-		if(year>2&&year<6) {
-		sanctionl.setLoanTenureInMonth(year*12);
-		sanctionRepository.save(sanctionl);
-		log.info("Loan Tenure Updated for this id : "+id+ " is "+sanctionl.getLoanTenureInMonth());
-		return "Loan Tenure Updated...";
-		}
-		log.warn("Loan Tenure should not be more than 6 years or less than 2 years...id :- "+id);
-		return "Loan Tenure should not be more than 6 years or less than 2 years...";
-	}
+//	// update Loan Tuner In Month
+//	@Override
+//	public String updateLoanTenureInMonth(Integer id,Integer year) {
+//
+//		SanctionLetter sanctionl = getById(id);
+//		if(year>2&&year<6) {
+//		sanctionl.setLoanTenureInMonth(year*12);
+//		sanctionRepository.save(sanctionl);
+//		log.info("Loan Tenure Updated for this id : "+id+ " is "+sanctionl.getLoanTenureInMonth());
+//		return "Loan Tenure Updated...";
+//		}
+//		log.warn("Loan Tenure should not be more than 6 years or less than 2 years...id :- "+id);
+//		return "Loan Tenure should not be more than 6 years or less than 2 years...";
+//	}
 
 
 	@Override
@@ -575,7 +533,7 @@ public class SanctionLetterImp implements SanctionLetterService{
 
 		Double	emiAmount =totalAmountWithInterest/sanctionl.getLoanTenureInMonth();
 		
-		sanctionl.setMonthlyEMIAmount(emiAmount);
+		sanctionl.setMonthlyEMIAmount(Math.round(emiAmount*100.0)/100.0);
 		
 		sanctionRepository.save(sanctionl);
 		log.info("EMI Amount generated for this id :- "+id +" Amount is : "+sanctionl.getMonthlyEMIAmount());
@@ -584,9 +542,5 @@ public class SanctionLetterImp implements SanctionLetterService{
 		log.warn("Generate Rate Of Interest First");
 		return "Generate Rate Of Interest First";
 	}
-	
-	
-	
-	
-	
+
 }

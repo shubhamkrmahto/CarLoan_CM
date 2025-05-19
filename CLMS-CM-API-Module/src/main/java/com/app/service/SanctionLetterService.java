@@ -1,6 +1,7 @@
 package com.app.service;
 
 import java.io.ByteArrayInputStream;
+import java.util.List;
 
 import com.app.entity.LoanApplication;
 
@@ -17,15 +18,13 @@ public interface SanctionLetterService {
 
 	public String updateRateInterest(Integer id, Integer cibilScore);
 
-	public String updateLoanTunerInMonth(Integer id, Integer cibilScore);
+	public List<SanctionLetter> getAllSanctionLetters();
 	
 	public ByteArrayInputStream getSanctionLetterPDF(Integer id);
 
 	public String updateSanctionedLoanAmount(Integer id);
 
 	public String updateRateInterest(Integer id);
-
-	public String updateLoanTenureInMonth(Integer id,Integer year);
 	
 	public String updateEMIAmount(Integer id);
 	
