@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -77,7 +77,7 @@ public class SanctionLetterImp implements SanctionLetterService{
 		
 		log.info("Sanction Details Saved from CM");
 		return "Sanction Details Saved";
-	
+	}
 
 	
 
