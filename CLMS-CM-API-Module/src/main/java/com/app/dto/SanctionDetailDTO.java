@@ -1,4 +1,5 @@
-package com.app.entity;
+package com.app.dto;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +8,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoanApplication {
-
+public class SanctionDetailDTO {
+	
+	private Integer applicationId;
+	
+	private CustomerDTO customer;
+	
 	private Double loanAmount;
-	private Customer customer;
 	
 }

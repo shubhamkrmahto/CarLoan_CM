@@ -1,4 +1,4 @@
-package com.app.entity;
+package com.app.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,12 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Customer {
-
-	private Integer customerId;
+public class CustomerDTO {
+	
 	private String customerName;
 	private Long customerContactNumber;
 	private String customerEmailId;
-	private LoanEnquiry le;
-	
+	private LoanEnquiryDTO le;
+
 }
