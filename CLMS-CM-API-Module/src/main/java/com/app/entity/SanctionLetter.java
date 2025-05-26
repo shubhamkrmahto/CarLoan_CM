@@ -5,13 +5,16 @@ import java.time.LocalDate;
 import com.app.enums.SanctionLetterStatus;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +28,7 @@ public class SanctionLetter {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer sanctionLetterId;
+	private Integer customerId;
 	private LocalDate sanctionDate;
 	private String applicantName;
 	private Long contactDetails;
@@ -45,7 +49,6 @@ public class SanctionLetter {
 	@Lob
 	@Column(length = 9000000)
 	private byte[] sanctionLetter;
-
 	
 }
 

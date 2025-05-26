@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,6 @@ import com.app.entity.LoanApplication;
 import com.app.entity.SanctionLetter;
 import com.app.service.SanctionLetterService;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/cm")
 public class SanctionLetterController {
@@ -55,6 +55,12 @@ public class SanctionLetterController {
 	public ResponseEntity<SanctionLetter> getByID(@PathVariable("id") Integer id)
 	{
 		return new ResponseEntity<SanctionLetter>(santionService.getById(id), HttpStatus.OK);
+	}
+	
+	@GetMapping("/getSanctionByCustomerId/{id}")
+	public ResponseEntity<SanctionLetter> getByCustomerID(@PathVariable("id") Integer id)
+	{
+		return new ResponseEntity<SanctionLetter>(santionService.getByCustomerId(id), HttpStatus.OK);
 	}
 	
 
@@ -105,5 +111,20 @@ public class SanctionLetterController {
 	{
 			
 		return new ResponseEntity<String>(santionService.updateEMIAmount(id), HttpStatus.OK);
+	}
+	
+	@GetMapping("/acceptSanction/{id}")
+	public ResponseEntity<String> acceptSanction(@PathVariable("id") Integer id)
+	{
+			
+		return new ResponseEntity<String>(santionService.acceptSanction(id), HttpStatus.OK);
+	}
+	
+	
+	@GetMapping("/rejectSanction/{id}")
+	public ResponseEntity<String> rejectSanction(@PathVariable("id") Integer id)
+	{
+			
+		return new ResponseEntity<String>(santionService.rejectSanction(id), HttpStatus.OK);
 	}
 }

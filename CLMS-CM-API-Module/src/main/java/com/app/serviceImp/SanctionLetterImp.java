@@ -8,14 +8,12 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
 import com.app.entity.LoanApplication;
 import com.app.entity.SanctionLetter;
 import com.app.enums.SanctionLetterStatus;
@@ -51,15 +49,58 @@ public class SanctionLetterImp implements SanctionLetterService {
 	private String from;
 
 
+//	@Override
+//	public String saveSanction(Integer id, SanctionLetter sl, LoanApplication details) {
+//		// TODO Auto-generated method stub
+//		
+////		Optional<LoanApplication> loanOnlySanction = loanApplicationRepository.findById(id);
+////		
+////		if(loanOnlySanction.isPresent()) {
+//			
+////			LoanApplication loanApplication = loanOnlySanction.get();
+//		
+////		Optional<SanctionLetter> byLoanApplicationId = sanctionRepository.findByLoanApplication_ApplicationId(id);
+////			
+////		if (byLoanApplicationId.isEmpty()) {
+////	        return "Loan application not found";
+////	    }
+////		
+////		SanctionLetter existingSanctionLetter = byLoanApplicationId.get();
+//		
+////		SanctionLetter sanctionl = new SanctionLetter();
+//		
+//		
+//		existingSanctionLetter.setLoanAmount(details.getLoanAmount());
+//		existingSanctionLetter.setCibilScore(details.getCustomer().getLe().getCibil().getCibilScore());
+//		existingSanctionLetter.setApplicantName(details.getCustomer().getCustomerName());
+//		existingSanctionLetter.setContactDetails(details.getCustomer().getCustomerContactNumber());
+//		existingSanctionLetter.setApplicantEmail(details.getCustomer().getCustomerEmailId());
+//		existingSanctionLetter.setInterestType(sl.getInterestType());//user
+//		existingSanctionLetter.setLoanTenureInMonth(sl.getLoanTenureInMonth()*12);
+//		existingSanctionLetter.setModeOfPayment(sl.getModeOfPayment());//user
+//		existingSanctionLetter.setRemarks(sl.getRemarks());//user
+//		existingSanctionLetter.setSanctionDate(LocalDate.now());
+//		existingSanctionLetter.setStatus(SanctionLetterStatus.NOT_GENERATED);
+//		existingSanctionLetter.setTermsAndCondition(sl.getTermsAndCondition());//user
+//		
+//		sanctionRepository.save(existingSanctionLetter);		
+//		
+//		return "Sanction Details Saved";
+//			
+//		}
+////		
+////		return "LoanApplication Not Present.";
+////	}
+
 	@Override
 	public String saveSanction(SanctionLetter sl, LoanApplication details) {
 		// TODO Auto-generated method stub
 		
 		SanctionLetter sanctionl = new SanctionLetter();
 		
-		
+		sanctionl.setCustomerId(details.getCustomer().getCustomerId());
 		sanctionl.setLoanAmount(details.getLoanAmount());
-		sanctionl.setCibilScore(details.getCibil().getCibilScore());
+		sanctionl.setCibilScore(details.getCustomer().getLe().getCibil().getCibilScore());
 		sanctionl.setApplicantName(details.getCustomer().getCustomerName());
 		sanctionl.setContactDetails(details.getCustomer().getCustomerContactNumber());
 		sanctionl.setApplicantEmail(details.getCustomer().getCustomerEmailId());
@@ -76,7 +117,6 @@ public class SanctionLetterImp implements SanctionLetterService {
 		return "Sanction Details Saved";
 	}
 
-
 	@Override
 	public SanctionLetter getById(Integer id) {
 		// TODO Auto-generated method stub
@@ -85,6 +125,14 @@ public class SanctionLetterImp implements SanctionLetterService {
 		
 		return byId.get();
 	}
+	
+	@Override
+	public SanctionLetter getByCustomerId(Integer id) {
+		// TODO Auto-generated method stub
+		
+		return sanctionRepository.findByCustomerId(id);
+	}
+	
 	
 	@Override
 	public List<SanctionLetter> getAllSanctionLetters() {
@@ -421,6 +469,29 @@ public class SanctionLetterImp implements SanctionLetterService {
 		}
 		return "Generate Rate Of Interest First";
 
+	}
+
+
+	@Override
+	public String acceptSanction(Integer id) {
+		// TODO Auto-generated method stub
+		
+		SanctionLetter sl = getById(id);
+		sl.setStatus(SanctionLetterStatus.ACCEPTED);
+		sanctionRepository.save(sl);
+		
+		return "Sanction Letter Accepted by Customer.";
+	}
+
+
+	@Override
+	public String rejectSanction(Integer id) {
+		// TODO Auto-generated method stub
+		SanctionLetter sl = getById(id);
+		sl.setStatus(SanctionLetterStatus.REJECTED);
+		sanctionRepository.save(sl);
+		
+		return "Sanction Letter REJECTED by Customer.";
 	}
 
 }

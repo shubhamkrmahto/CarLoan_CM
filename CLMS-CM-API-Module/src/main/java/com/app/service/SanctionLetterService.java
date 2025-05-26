@@ -10,9 +10,11 @@ import com.app.entity.SanctionLetter;
 public interface SanctionLetterService {
 
 
-	public String saveSanction(SanctionLetter sl,LoanApplication details);
+	public String saveSanction( SanctionLetter sl,LoanApplication details);
 
 	public SanctionLetter getById(Integer id);
+	
+	public SanctionLetter getByCustomerId(Integer id);
 	
 	public List<SanctionLetter> getAllSanctionLetters();
 	
@@ -25,6 +27,10 @@ public interface SanctionLetterService {
 //	public String updateLoanTenureInMonth(Integer id,Integer year);
 	
 	public String updateEMIAmount(Integer id);
+	
+	public String acceptSanction(Integer id);
+	
+	public String rejectSanction(Integer id);
 	
 }
 
